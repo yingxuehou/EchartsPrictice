@@ -5,8 +5,47 @@
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Document</title>
+  <script src="https://cdn.bootcdn.net/ajax/libs/echarts/5.3.3/echarts.common.js"></script>
+  <style>
+    #chartBox{
+      width: 800px;
+      height: 600px;
+      border: 1px solid teal;
+      margin: 100px auto;
+    }
+  </style>
 </head>
 <body>
-  
+  <div id="chartBox"></div>
+  <script>
+    let chartBox = document.getElementById('chartBox')
+    // 初始化图表
+    let myChart = echarts.init(chartBox)
+    // 准备配置项
+    let chartOption = {
+      title:{
+        text:"数据可视化-基础",
+        textStyle:{
+          color: 'teal'
+        }
+      },
+      xAxis:{
+        data:['星期一','星期二','星期三','星期四','星期五','星期六','星期日']
+      },
+      yAxis:{
+        axisLine:{
+          show: true
+        }
+      },
+      series:[
+        {
+          type:'bar',
+          data:[25,36,15,42,22,33,40]
+        }
+      ]
+    }
+    // 将配置传给图表对象，并渲染图表
+    myChart.setOption(chartOption)
+  </script>
 </body>
 </html>

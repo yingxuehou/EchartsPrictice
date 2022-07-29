@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>散点图和一些坐标系图表的通用配置</title>
+  <!-- 1.引入echarts文件 -->
+  <script src="https://cdn.bootcdn.net/ajax/libs/echarts/5.3.3/echarts.min.js"></script>
+  <style>
+    *{
+      margin: 0;
+      padding: 0;
+    }
+    #box{
+      width: 800px;
+      height: 400px;
+      margin: 100px auto;
+      border: 1px solid purple;
+    }
+  </style>
+</head>
+<body>
+  <!-- 2.准备图表容器 -->
+  <div id="box"></div>
+
+  <script>
+
+    let serverData = [{ "gender": "female", "height": 161.2, "weight": 51.6 }, {
+            "gender": "female", "height": 167.5, "weight": 59 }, { "gender": "female",
+            "height": 159.5, "weight": 49.2 }, { "gender": "female", "height": 157,
+            "weight": 63 }, { "gender": "female", "height": 155.8, "weight": 53.6 }, {
+            "gender": "female", "height": 170, "weight": 59 }, { "gender": "female",
+            "height": 159.1, "weight": 47.6 }, { "gender": "female", "height": 166,
+            "weight": 69.8 }, { "gender": "female", "height": 176.2, "weight": 66.8 }, {
+            "gender": "female", "height": 160.2, "weight": 75.2 }, { "gender": "female",
+            "height": 172.5, "weight": 55.2 }, { "gender": "female", "height": 170.9,
+            "weight": 54.2 }, { "gender": "female", "height": 172.9, "weight": 62.5 }, {
+            "gender": "female", "height": 153.4, "weight": 42 }, { "gender": "female",
+            "height": 160, "weight": 50 }, { "gender": "female", "height": 147.2,
+            "weight": 49.8 }]
+    let chartData = serverData.map(item=>{return [item.height,item.weight]})
+    // 3.初始化图表对象
+    let myChart = echarts.init(document.querySelector('#box'))
+    // 4.准备参数
+    let options = {
+      title: {
+        text: '身高体重统计',
+        subtext: '散点图练习'
+      },
+      xAxis:{
+        // 散点图x,y轴的type都是value
+        type: 'value',
+        scale: true
+      },
+      yAxis:{
+        scale: true,
+        axisLine:{
+          show: true
+        }
+      },
+      series:[
+        {
+          // 普通散点图
+          // type:'scatter',
+          // 带有涟漪效果的散点图-----通常与地图配合使用，标记出地图上的某个地理位置
+          type: 'effectScatter',
+          // 设置涟漪效果在什么时候产生 render:渲染时就产生， emphasis: 鼠标滑过某个点时产生
+          showEffectOn: 'render',
+          // 涟漪效果相关的配置
+          rippleEffect: {
+            scale: 3
+          },
+          // 散点图的图表数据，是一个二维数组：[[,],[,],[,],[,]...]
+          data: chartData,
+          // 设置散点的大小----可以为数字，也可以是回调函数：根据不同的值，设置不同的大小
+          // symbolSize: 25,
+          symbolSize: function(arg){
+            var weight = arg[1]
+            var height = arg[0] / 100
+            var bmi = weight / (height * height)
+            if (bmi > 28) {
+              return 20
+            }
+            return 5
+          },
+          // 设置散点的样式
+          itemStyle: {
+            // 颜色----可以是字符串，也可以是回调函数：根据不同的值，设置不同的颜色
+            // color: 'orange'
+            color: function(arg){
+              var weight = arg.data[1]
+              var height = arg.data[0] / 100
+              var bmi = weight / (height * height)
+              if (bmi > 20) {
+                return 'red'
+              }
+              return 'green'
+            }
+          }
+        }
+      ],
+      // 网格的配置
+      grid: {
+        show: false,
+        top: 80
+      },
+      // 用于区域缩放，对数据范围过滤，x、y轴都可拥有
+      dataZoom:[
+        {
+          type: 'slider',
+          // 产生作用的轴，值不重要，一般写为0
+          xAxisIndex: 0,
+          // start和end指明缩放的起始百分比
+          start: 10,
+          end: 80
+        },
+        {
+          type: 'inside',
+          yAxisIndex: 0
+        }
+      ]
+    }
+    // 5.把参数传递给图表对象
+    myChart.setOption(options)
+  </script>
+</body>
+</html>

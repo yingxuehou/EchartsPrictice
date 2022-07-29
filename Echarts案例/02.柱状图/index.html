@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>柱状图</title>
+  <!-- 1.引包 -->
+  <script src="https://cdn.bootcdn.net/ajax/libs/echarts/5.3.3/echarts.common.js"></script>
+  <style>
+    *{
+      padding: 0;
+      margin: 0;
+    }
+    #echartsBox{
+      width: 800px;
+      height: 400px;
+      margin: 100px auto;
+      border: 1px solid teal;
+    }
+  </style>
+</head>
+<body>
+  <!-- 2.创建容器 -->
+  <div id="echartsBox"></div>
+
+  <script>
+    // 3.创建图表对象
+    let myChart = echarts.init(document.querySelector('#echartsBox'))
+    // 4.准备配置项
+    let options = {
+      // 标题
+      title:{
+        text: '柱状图-数学成绩',
+        textStyle:{
+          color:'orange',
+          fontSize: 18
+        },
+        left: '20px',
+        top: '20px'
+      },
+      // 图例
+      legend:{
+        data: ['数学']
+      },
+      // x轴: x、y轴的type互换之后，可以使柱状图横向展示，设置为category的轴中，需要配置好data
+      xAxis:{
+        type: 'category',
+        // type: 'value',
+        data:['张三', '李四', '王五', '闰土', '小明', '茅台', '二妞', '大强']
+        // axisLine:{
+        //   show:true
+        // }
+      },
+      yAxis:{
+        // type: 'category',
+        // data:['张三', '李四', '王五', '闰土', '小明', '茅台', '二妞', '大强'],
+        axisLine:{
+          show: true
+        }
+      },
+      series:[{
+        name: '数学',
+        type: 'bar',
+        data:  [88, 92, 63, 77, 94, 80, 72, 86],
+        // 柱的宽度
+        barWidth: '50%',
+        // label（柱上的文本标签）的配置项
+        label:{
+          show: true,
+          rotate: 20,
+          formatter: `{a}-{b}-{c}`
+        },
+        // 标注点的配置项
+        markPoint: {
+          data: [
+            { type: 'max', name: '最高成绩'},
+            { type: 'min', name: '最低成绩'},
+          ]
+        },
+        // 标注线的配置项
+        markLine: {
+          data:[
+            {type:'average',name:'平均成绩'}
+          ]
+        },
+      }],
+      // 鼠标移动到或点击图表时，展示出的提示框
+      tooltip:{
+        trigger: 'item',
+        triggerOn: 'mousemove',
+        formatter: '{b}--{c}'
+      },
+      // 工具栏
+      toolbox:{
+        feature: {
+          saveAsImage: {}, // 将图表保存为图片
+          dataView: {}, // 是否显示出原始数据
+          restore: {}, // 还原图表
+          dataZoom: {}, // 数据缩放
+          magicType: { // 将图表在不同类型之间切换,图表的转换需要数据的支持
+            type: ['bar', 'line']
+          }
+        }
+      }
+    }
+    // 将配置项传给图表对象
+    myChart.setOption(options)
+  </script>
+</body>
+</html>

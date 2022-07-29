@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+  <!-- 1.引包 -->
+  <script src="https://cdn.bootcdn.net/ajax/libs/echarts/5.3.3/echarts.common.js"></script>
+  <style>
+    *{
+      padding: 0;
+      margin: 0;
+    }
+    #box{
+      width: 800px;
+      height: 400px;
+      margin: 100px auto;
+      border: 1px solid pink;
+    }
+  </style>
+</head>
+<body>
+  <!-- 2.准备容器 -->
+  <div id="box"></div>
+
+  <script>
+    // 3.初始化图表对象
+    let myChart = echarts.init(document.querySelector('#box'))
+    // 4.准备参数
+    let options = {
+      title:{
+        text: '收入统计',
+        subtext: '2022年',
+      },
+      tooltip: {
+        tirgger: 'item',
+        triggerOn: 'mousemove'
+      },
+      xAxis:{
+        type:'category',
+        data: ['1月', '2月', '3月', '4月', '5月', '6月', '7月', '8月', '9月','10月', '11月', '12月'],
+        // 开始位置紧挨y轴
+        boundaryGap: false
+      },
+      yAxis:{
+        axisLine:{
+          show: true
+        },
+        // 设置缩放，脱离0值比例-----如果y值的数据相差的很小，会使折线图看起来很平，看不出差异。设置缩放后，y轴的起始坐标
+        // 会灵活的设置，放大数据的变化趋势，使图表的变化趋势更明显，更有参考意义
+        scale: true
+      },
+      series:[
+        {
+          type:'line',
+          // 线条平滑
+          smooth: true,
+          // 线条样式
+          lineStyle: {
+            color: 'pink',
+            type: 'dashed'
+          },
+          // 填充样式
+          areaStyle: {
+            color: 'teal'
+          },
+          
+          data: [3000, 2800, 900, 1000, 800, 700, 1400, 1300, 900, 1000, 800, 600],
+          markPoint: {
+            data: [
+              {type: 'max', name: '最大值'},
+              {type: 'min',name: '最小值'}
+            ]
+          },
+          markLine:{
+            data:[
+              {type: 'average', name: '平均值'}
+            ]
+          },
+          // 标注区间
+          markArea: {
+            data: [
+              [{xAxis:'1月'},{xAxis:'2月'}],
+              [{xAxis:'7月'},{xAxis:'9月'}]
+            ]
+          },
+          stack: '111'
+        },
+        // 堆叠图：第二组数据表示的不是真实的值，而是相对于第一组数据的涨幅，也可以理解为，第二组数据的起点是第一组数据
+        // 设置方式：series中的多个成员，设置相同的stack即可
+        {
+          type: 'line',
+          smooth: true,
+          data: [20, 82, 191, 94, 290, 330, 310],
+          stack: '111',
+          areaStyle: {
+            color: 'pink'
+          }
+        }
+      ]
+    }
+    // 5.把参数传给图表对象
+    myChart.setOption(options)
+  </script>
+</body>
+</html>

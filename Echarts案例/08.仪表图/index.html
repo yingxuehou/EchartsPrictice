@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>仪表图</title>
+  <!-- 1.引入echarts文件 -->
+  <script src="https://cdn.bootcdn.net/ajax/libs/echarts/5.3.3/echarts.min.js"></script>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+    }
+
+    #box,
+    #shandongMap {
+      width: 600px;
+      height: 600px;
+      border: 1px solid orchid;
+      margin: 100px auto;
+    }
+  </style>
+</head>
+<body>
+  <!-- 2.准备图表容器 -->
+  <div id="box"></div>
+  <script>
+    // 3.初始化图表对象
+    let myChart = echarts.init(document.querySelector("#box"))
+    // 4.准备参数
+    let option = {
+      title:{
+        text: '仪表图'
+      },
+      series:[
+        {
+          type:'gauge',
+          data:[{value: 50, name: 'score'}]
+        }
+      ]
+    }
+    // 5.将配置项传给图表对象，渲染图表
+    myChart.setOption(option)
+  </script>
+</body>
+</html>

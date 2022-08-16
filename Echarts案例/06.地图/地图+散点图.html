@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+  <!-- 1.引入echart.js文件  -->
+  <script src="https://cdn.bootcdn.net/ajax/libs/echarts/5.3.3/echarts.min.js"></script>
+  <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+    }
+
+    #box,
+    #shandongMap {
+      width: 600px;
+      height: 600px;
+      border: 1px solid orchid;
+      margin: 100px auto;
+    }
+  </style>
+</head>
+<body>
+  <!-- 2.准备好容器 -->
+  <div id="box"></div>
+
+  <script>
+    var airData = [
+      { name: '北京市', value: 39.92,itemStyle:{areaColor:'red'} },
+      { name: '天津市', value: 39.13 },
+      { name: '上海市', value: 31.22 },
+      { name: '重庆市', value: 66 },
+      { name: '河北省', value: 147 },
+      { name: '河南省', value: 113 },
+      { name: '云南省', value: 25.04 },
+      { name: '辽宁省', value: 50 },
+      { name: '黑龙江省', value: 114 },
+      { name: '湖南省', value: 175 },
+      { name: '安徽省', value: 117 },
+      { name: '山东省', value: 92 },
+      { name: '新疆维吾尔自治区', value: 84, itemStyle:{areaColor:'yellow'}},
+      { name: '江苏省', value: 67 },
+      { name: '浙江省', value: 84 },
+      { name: '江西省', value: 96 },
+      { name: '湖北省', value: 273 },
+      { name: '广西壮族自治区', value: 59 },
+      { name: '甘肃省', value: 99 },
+      { name: '山西省', value: 39 },
+      { name: '内蒙古自治区', value: 58 },
+      { name: '陕西省', value: 61 },
+      { name: '吉林省', value: 51 },
+      { name: '福建省', value: 29 },
+      { name: '贵州省', value: 71 },
+      { name: '广东省', value: 38 },
+      { name: '青海省', value: 57 },
+      { name: '西藏自治区', value: 24 },
+      { name: '四川省', value: 58 },
+      { name: '宁夏回族自治区', value: 52 },
+      { name: '海南省', value: 54 },
+      { name: '台湾省', value: 88 },
+      { name: '香港特别行政区', value: 66 },
+      { name: '澳门特别行政区', value: 77 },
+      { name: '南海诸岛', value: 55 }
+    ]
+
+    var scatterData = [
+      {
+        value: [117.283042, 31.86119]
+      }
+    ]
+
+    var myChart = echarts.init(document.querySelector('#box'))
+
+    axios.get('china.json').then(res => {
+      echarts.registerMap('china',res.data)
+      var option = {
+        title: {
+          text: '中国地图'
+        },
+        // geo配置和series-map配置是等价的，可以只配置一个（）
+        geo:{
+          type: 'map',
+          map: 'china',
+          roam: true,
+          itemStyle:{
+            borderColor: 'red'
+          },
+          label:{
+            show: true
+          },
+          colorBy: 'data'
+        },
+        series:[
+          {
+            type: 'map',
+            // map: 'china', // 如果配置了geo，且在series-map中指定了geoIndex，这个map不需要写
+            geoIndex: 0, // 1.如果同时配置了geo和series-map，这个必须要写，否则会出现两个地图 2.指定了geo属性后，series-map.map属性，以及series-map.itemStyle等样式配置不再起作用，而是采用geo中的相应属性
+            data: airData,
+            itemStyle:{ // 此属性失效，使用geo配置中对应的属性
+              borderColor: 'green'
+            },
+            colorBy: 'data',
+          },
+          {
+            type: 'effectScatter',
+            coordinateSystem: 'geo',
+            data: scatterData,
+            rippleEffect: {
+              color:'#ffffff',
+              scale: 10
+            }
+          }
+        ],
+        visualMap: {
+          min: 0, // 最小值
+          max: 300, // 最大值
+          calculable: true, // 控制左下角滑块
+          inRange: {
+            color: ['white','red']
+            // color: [
+            //   '#313695',
+            //   '#4575b4',
+            //   '#74add1',
+            //   '#abd9e9',
+            //   '#e0f3f8',
+            //   '#ffffbf',
+            //   '#fee090',
+            //   '#fdae61',
+            //   '#f46d43',
+            //   '#d73027',
+            //   '#a50026'
+            // ]
+          }
+        }
+      }
+
+      myChart.setOption(option)
+    })
+  </script>
+</body>
+</html>

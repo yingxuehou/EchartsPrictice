@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+  <!-- 1.引入echart.js文件  -->
+  <script src="https://cdn.bootcdn.net/ajax/libs/echarts/5.3.3/echarts.min.js"></script>
+  <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+    }
+
+    #box,
+    #shandongMap {
+      width: 600px;
+      height: 600px;
+      border: 1px solid orchid;
+      margin: 100px auto;
+    }
+  </style>
+</head>
+<body>
+  <!-- 2.准备好容器 -->
+  <div id="box"></div>
+
+  <script>
+    var myChart = echarts.init(document.querySelector('#box'))
+    var airData = [
+      { name: '北京市', value: 39.92 },
+      { name: '天津市', value: 39.13 },
+      { name: '上海市', value: 31.22 },
+      { name: '重庆市', value: 66 },
+      { name: '河北省', value: 147 },
+      { name: '河南省', value: 113 },
+      { name: '云南省', value: 25.04 },
+      { name: '辽宁省', value: 50 },
+      { name: '黑龙江省', value: 114 },
+      { name: '湖南省', value: 175 },
+      { name: '安徽省', value: 117 },
+      { name: '山东省', value: 92 },
+      { name: '新疆维吾尔自治区', value: 84 },
+      { name: '江苏省', value: 67 },
+      { name: '浙江省', value: 84 },
+      { name: '江西省', value: 96 },
+      { name: '湖北省', value: 273 },
+      { name: '广西壮族自治区', value: 59 },
+      { name: '甘肃省', value: 99 },
+      { name: '山西省', value: 39 },
+      { name: '内蒙古自治区', value: 58 },
+      { name: '陕西省', value: 61 },
+      { name: '吉林省', value: 51 },
+      { name: '福建省', value: 29 },
+      { name: '贵州省', value: 71 },
+      { name: '广东省', value: 38 },
+      { name: '青海省', value: 57 },
+      { name: '西藏自治区', value: 24 },
+      { name: '四川省', value: 58 },
+      { name: '宁夏回族自治区', value: 52 },
+      { name: '海南省', value: 54 },
+      { name: '台湾省', value: 88 },
+      { name: '香港特别行政区', value: 66 },
+      { name: '澳门特别行政区', value: 77 },
+      { name: '南海诸岛', value: 55 }
+    ]
+    var dataGeo = [
+      {
+        name: "六安",
+        value: [116.50, 31.75]
+      },{
+        name: "马鞍山",
+        value: [118.51, 31.68]
+      },{
+        name: "宿州",
+        value: [116.98, 33.63]
+      }
+    ]
+    var lineData = [
+      {
+        // point: ["六安", "马鞍山"],
+        coords: [
+          [116.50, 31.75],
+          [118.51, 31.68]
+        ],
+      },
+      {
+        // point: ["宿州", "马鞍山"],
+        coords: [
+          [118.51, 31.68],
+          [116.98, 33.63]
+        ],
+      },{
+        // point: ["宿州", "六安"],
+        coords: [
+          [116.98, 33.63],
+          [116.50, 31.75]
+        ],
+      }
+    ]
+    axios.get('./china.json').then(res=>{
+      echarts.registerMap('anhui',res.data)
+
+      var option = {
+        title: {
+          text: '安徽地图'
+        },
+        geo:{ // 绘制地图时，如果配置了geo，就不要再配置series-map了，否则会绘制出两个地图
+          type: 'map',
+          map: 'anhui',
+          roam: true,
+          zoom: 1.1,
+          data: airData,
+          label: {
+            show: true,
+
+          },
+          itemStyle: {
+            color: "#ddb926",
+            normal: {
+              areaColor: "#8abcd1",
+              borderColor: "#fff",
+              borderWidth: 1
+            },
+            emphasis: {
+              borderWidth: 0.5,
+              borderColor: "#8abcd1",
+              areaColor: "yellow"
+            }
+          },
+        },
+        series:[
+          // {
+          //   type: 'map',
+          //   map: 'anhui',
+          // },
+          {
+            // 指定了geo属性后，series-map.map属性，以及series-map.itemStyle等样式配置不再起作用，而是采用geo中的相应属性
+            type: 'map',
+            mapType: 'anhui',
+            geoIndex: 0, // 同时使用geo和series-map，如果不在series-map上指定这个值，会导致地图重复渲染两次，缩放重影
+            data: airData,
+            itemStyle:{ // 此属性失效，使用geo配置中对应的属性
+              borderColor: 'green'
+            },
+            label: {
+              show: true
+            },
+            zlevel: 1,
+          },
+          {
+            // name: "",
+            type: "scatter",
+            coordinateSystem: "geo",
+            data: dataGeo,
+            // geoIndex: 0, // 这样写时，如果同时配置了series-map和geo，会使用series中配置的第一个series-map的坐标系，而不是geo属性的坐标系；如果只配置了geo，则使用geo的坐标系
+            zlevel: 2,
+            itemStyle: {
+              color: "#ffffff",
+              borderColor: '#ffffff'
+            }
+          }, 
+          {
+          //   // name: "",
+            type: "lines",
+            zlevel: 2,
+            polyline: true,
+            geoIndex: 0, // 同上
+            lineStyle: {
+              normal: {
+                show:true,
+                color:'red',
+                width: 2,
+                opacity: 1.0,
+                curveness: 0.15
+              }
+            },
+            data: lineData,
+          },
+        ]
+      }
+
+      myChart.setOption(option)
+    })
+  </script>
+</body>
+</html>

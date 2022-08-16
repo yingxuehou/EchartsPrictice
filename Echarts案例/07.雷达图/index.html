@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>雷达图</title>
+  <!-- 1.引入echarts文件 -->
+  <script src="https://cdn.bootcdn.net/ajax/libs/echarts/5.3.3/echarts.min.js"></script>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+    }
+
+    #box,
+    #shandongMap {
+      width: 600px;
+      height: 600px;
+      border: 1px solid orchid;
+      margin: 100px auto;
+    }
+  </style>
+</head>
+<body>
+  <!-- 2.为图表转备好容器 -->
+  <div id="box"></div>
+  <script>
+    // 3. 初始化图表
+    let myChart = echarts.init(document.querySelector('#box'))
+
+    // 定义各个维度的最大值
+    var dataMax = [
+      {name: '易用性', max: 100, color: 'red'},
+      {name: '功能', max: 100, color: 'orange'},
+      {name: '拍照', max: 100 , color: 'teal'},
+      {name: '跑分', max: 100},
+      {name: '续航', max: 100, color: 'green'}
+      ]
+    // 准备产品数据
+    var hwScore = [80, 90, 80, 82, 90]
+    var zxScore = [70, 82, 75, 70, 78]
+
+    // 4.准备图表参数
+    let option = {
+      title: {
+        text: '基础雷达图'
+      },
+      // 雷达图的坐标系组件
+      radar: {
+        // 雷达图的指示器，用来指定雷达图中的多个变量（维度）
+        indicator: dataMax,
+        shape: 'circle'
+      },
+      series:[
+        {
+          type: 'radar',
+          data:[
+            {name: '华为手机',value: hwScore},
+            {name: '中兴手机',value: zxScore}
+          ],
+          label: {
+            show: true
+          },
+          areaStyle: {},
+        }
+      ]
+    }
+    // 5.将参数传给图表对象，渲染图表
+    myChart.setOption(option)
+  </script>
+</body>
+</html>

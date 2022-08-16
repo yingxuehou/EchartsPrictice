@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="zh">
+
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+  <!-- 1.引入echart.js文件  -->
+  <script src="https://cdn.bootcdn.net/ajax/libs/echarts/5.3.3/echarts.min.js"></script>
+  <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+    }
+
+    #box,
+    #shandongMap {
+      width: 600px;
+      height: 600px;
+      border: 1px solid orchid;
+      margin: 100px auto;
+    }
+  </style>
+</head>
+
+<body>
+  <!-- 2.准备好容器 -->
+  <div id="box"></div>
+  <div id="shandongMap"></div>
+
+  <script>
+    function randomData() {
+        return Math.round(Math.random()*500);
+    }
+
+    var mydata = [
+        {name: '北京市',value: '100' },{name: '天津',value: randomData() },
+        {name: '上海市',value: randomData() },{name: '重庆',value: randomData() },
+        {name: '河北省',value: randomData() },{name: '河南',value: randomData() },
+        {name: '云南省',value: randomData() },{name: '辽宁',value: randomData() },
+        {name: '黑龙江省',value: randomData() },{name: '湖南',value: randomData() },
+        {name: '安徽省',value: randomData() },{name: '山东',value: randomData() },
+        {name: '新疆维吾尔自治区',value: randomData() },{name: '江苏',value: randomData() },
+        {name: '浙江省',value: randomData() },{name: '江西',value: randomData() },
+        {name: '湖北省',value: randomData() },{name: '广西',value: randomData() },
+        {name: '甘肃省',value: randomData() },{name: '山西',value: randomData() },
+        {name: '内蒙古自治区',value: randomData() },{name: '陕西',value: randomData() },
+        {name: '吉林省',value: randomData() },{name: '福建',value: randomData() },
+        {name: '贵州省',value: randomData() },{name: '广东',value: randomData() },
+        {name: '青海省',value: randomData() },{name: '西藏',value: randomData() },
+        {name: '四川省',value: randomData() },{name: '宁夏',value: randomData() },
+        {name: '海南省',value: randomData() },{name: '台湾',value: randomData() },
+        {name: '香港特别行政区',value: randomData() },{name: '澳门',value: randomData() }
+    ];
+
+
+    // 3. 初始化图表对象
+    let myChart = echarts.init(document.querySelector('#box'))
+
+    // 4. 准备图表参数
+    let options = {
+      title: {
+        text: '中国地图',
+        textStyle: {
+          color: 'teal'
+        }
+      },
+      //左侧小导航图标
+      visualMap: {
+        show : true,
+        x: 'left',
+        y: 'bottom',
+        // pieces: [
+        //     {min: 500, max:600},{min: 400, max: 500},
+        //     {min: 300, max: 400},{min: 200, max: 300},
+        //     {min: 100, max: 200},{min: 0, max: 100},
+        // ],
+        min:0,
+        max: 600,
+        color: ['#5475f5', '#9feaa5', '#85daef','#74e2ca', '#e6ac53', '#9fb5ea']
+      },
+     series:[
+      {
+        type: 'map',
+        map: 'china',
+        data: mydata,
+        zoom:1.1,
+        roam: true,
+        label: {
+          normal: {
+            show: true,
+          },
+          emphasis:{
+            show: true
+          }
+        }
+      },
+      {
+        type: 'effectScatter',
+        coordinateSystem: 'geo',
+        data: [ // 数据
+          { name: '北京市', value: [116.422586, 39.921549, 560] },
+        ],
+        zIndex:1,
+      }
+     ]
+    }
+
+    axios.get('./china.json').then(res => {
+      // 往 echarts 全局对象注册地图的 json 数据
+      echarts.registerMap('china', res.data)
+
+      // 5.将参数传给图表对象，并渲染图表
+      myChart.setOption(options)
+    })
+  </script>
+</body>
+
+</html>
